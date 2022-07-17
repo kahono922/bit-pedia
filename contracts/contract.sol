@@ -16,7 +16,7 @@ struct Record {
         string title;
         string content;
         address author;
-        string[] issues;
+        Record[] issues;
         uint votesPositive;
         uint votesNegative;
         bool isVerified;
@@ -26,10 +26,14 @@ struct Record {
 contract Pedia {
     mapping(uint256 => Record) public records;
       mapping(address => uint256) public recordCount;
-      string[] public issue;
+      Record[] public issue;
 
       function createRecord(string memory _title, string memory _content, address _author) public {
             Record memory record = Record(_title, _content, _author,issue, 0, 0, false);
             records[recordCount[_author]] = record;
       }
+      function votePositive(uint256 _recordId) public {
+            records[_recordId].votesPositive++;
+      }
+      
 }
