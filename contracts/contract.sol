@@ -4,7 +4,6 @@ pragma solidity >=0.7.0 <0.9.0;
 
 //struct for records
 
-
 //how it should work
 //A record is created by anyone
 //People view the record and either vote positive or negative
@@ -13,27 +12,71 @@ pragma solidity >=0.7.0 <0.9.0;
 //<not sure how to determine if the record is verified>
 //<pretty sure its not the best way to do it>
 struct Record {
-        string title;
-        string content;
-        address author;
-        Record[] issues;
-        uint votesPositive;
-        uint votesNegative;
-        bool isVerified;
+    uint256 id;
+    string title;
+    string content;
+    address author;
+    uint256[] issues;
+    uint256 votesPositive;
+    uint256 votesNegative;
+    bool isVerified;
+    //time of creation
+    uint256 creationTime;
 }
-
 
 contract Pedia {
     mapping(uint256 => Record) public records;
-      mapping(address => uint256) public recordCount;
-      Record[] public issue;
+    uint256[] public recordIDs;
 
-      function createRecord(string memory _title, string memory _content, address _author) public {
-            Record memory record = Record(_title, _content, _author,issue, 0, 0, false);
-            records[recordCount[_author]] = record;
-      }
-      function votePositive(uint256 _recordId) public {
-            records[_recordId].votesPositive++;
-      }
-      
+    function addRecord(
+        string memory _title,
+        string memory _content,
+        address _author
+    ) public {
+        uint256[] memory issue = new uint256[](0);
+        //time now
+        uint256 time = block.timestamp;
+        Record memory record = Record(
+            recordIDs.length,
+            _title,
+            _content,
+            _author,
+            issue,
+            0,
+            0,
+            false,
+            time
+        );
+        recordIDs.push(record.id);
+        records[record.id] = record;
+    }
+
+    function voteNegative(
+        uint256 _recordID,
+        string memory _title,
+        string memory _content,
+        address _author
+    ) public {
+        uint256[] memory issue = new uint256[](0);
+        //time now
+        uint256 time = block.timestamp;
+        Record memory record = Record(
+            recordIDs.length,
+            _title,
+            _content,
+            _author,
+            issue,
+            0,
+            0,
+            false,
+            time
+        );
+        recordIDs.push(record.id);
+        records[_recordID].issues.push(record.id);
+        records[_recordID].votesNegative++;
+    }
+
+    function votePositive(uint256 _recordID) public {
+        records[_recordID].votesPositive++;
+    }
 }
